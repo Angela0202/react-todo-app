@@ -4,18 +4,18 @@ import styles from './styles';
 import ListItem from './ListItem/index';
 
 import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 
-import memoize from "memoize-one";
+import memoize from 'memoize-one';
 
 class TodoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabValue: 0,
+      tabValue: 0
     };
   }
 
@@ -40,15 +40,6 @@ class TodoList extends Component {
     this.setState({ tabValue });
   };
 
-  deleteAll = () => {
-    const { todos } = this.props;
-
-    todos.length = 0;
-    this.setState({
-      todos
-    })
-  };
-
   render() {
     const {
       classes,
@@ -64,38 +55,24 @@ class TodoList extends Component {
     return (
       <div className={classes.root}>
         <List>
-          {
-            todos.map((todo) => (
-              <ListItem
-                todo={todo}
-                key={todo.id}
-                onTodoCompleteChange={onTodoCompleteChange}
-                onTodoItemRemove={onTodoItemRemove}
-              />
-            ))
-          }
+          {todos.map(todo => (
+            <ListItem
+              todo={todo}
+              key={todo.id}
+              onTodoCompleteChange={onTodoCompleteChange}
+              onTodoItemRemove={onTodoItemRemove}
+            />
+          ))}
         </List>
         <div className={classes.filterBar}>
           <span>{activeTodos.length} Items Left</span>
-          <Tabs
-            value={tabValue}
-            onChange={this.onTabChange}
-          >
-            <Tab
-              label="All"
-              onClick={this.onAllClick}
-            />
-            <Tab
-              label="Active"
-              onClick={this.onActiveClick}
-            />
-            <Tab
-              label="Completed"
-              onClick={this.onCompleteClick}
-            />
+          <Tabs value={tabValue} onChange={this.onTabChange}>
+            <Tab label="All" onClick={this.onAllClick} />
+            <Tab label="Active" onClick={this.onActiveClick} />
+            <Tab label="Completed" onClick={this.onCompleteClick} />
           </Tabs>
         </div>
-        <Button onClick={this.deleteAll}>
+        <Button onClick={this.props.onDeleteAll}>
           <span>Delete All</span>
         </Button>
       </div>

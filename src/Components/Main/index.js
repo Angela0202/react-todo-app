@@ -41,20 +41,34 @@ class Main extends Component {
       for (let i = 0; i < todos.length; i++) {
         todos[i].isComplete = true;
       }
-      this.setState({
-        todos,
-        markedAll: true,
-        clicked: true
-      });
+      this.setState(
+        {
+          todos,
+          markedAll: true,
+          clicked: true
+        },
+        () => {
+          for (let i = 0; i < todos.length; i++) {
+            this.onTodoCompleteChange(true, todos[i]);
+          }
+        }
+      );
     } else {
       for (let i = 0; i < todos.length; i++) {
         todos[i].isComplete = false;
       }
-      this.setState({
-        todos,
-        markedAll: false,
-        clicked: false
-      });
+      this.setState(
+        {
+          todos,
+          markedAll: false,
+          clicked: false
+        },
+        () => {
+          for (let i = 0; i < todos.length; i++) {
+            this.onTodoCompleteChange(false, todos[i]);
+          }
+        }
+      );
     }
   };
 
@@ -99,6 +113,15 @@ class Main extends Component {
     });
   };
 
+  onDeleteAll = () => {
+    const { todos } = this.state;
+
+    todos.length = 0;
+    this.setState({
+      todos: []
+    });
+  };
+
   onFilterChange = selectedFilter => {
     this.setState({
       selectedFilter
@@ -135,6 +158,7 @@ class Main extends Component {
               onTodoCompleteChange={this.onTodoCompleteChange}
               onTodoItemRemove={this.onTodoItemRemove}
               onFilterChange={this.onFilterChange}
+              onDeleteAll={this.onDeleteAll}
             />
           </CardContent>
         </Card>
@@ -142,13 +166,5 @@ class Main extends Component {
     );
   }
 }
-
-Main.propTypes = {
-  ID: PropTypes.number,
-  completedTodos: PropTypes.func,
-  activeTodos: PropTypes.func,
-  markCompleteAll: PropTypes.func,
-  onTodoItemCreate: PropTypes.func
-};
 
 export default withStyles(styles)(Main);

@@ -23,7 +23,6 @@ class TodoListItem extends Component {
       isComplete: false,
       editing: false,
       value: props.todo.value,
-      open: false
     };
   }
 
