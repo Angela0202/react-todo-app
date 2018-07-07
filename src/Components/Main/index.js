@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import memoize from 'memoize-one';
 
 import styles from './styles';
@@ -12,13 +14,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       todos: [],
-      selectedFilter: "",
+      selectedFilter: '',
       markedAll: false,
       clicked: false
     };
@@ -27,17 +28,17 @@ class Main extends Component {
   static ID = 0;
 
   static completedTodos(todos) {
-    return todos.filter((todo) => todo.isComplete);
+    return todos.filter(todo => todo.isComplete);
   }
 
   static activeTodos(todos) {
-    return todos.filter((todo) => !todo.isComplete);
+    return todos.filter(todo => !todo.isComplete);
   }
 
   markCompleteAll = () => {
     const { todos, markedAll } = this.state;
-    if(!markedAll) {
-      for(let i =0; i < todos.length; i++) {
+    if (!markedAll && todos.length > 0) {
+      for (let i = 0; i < todos.length; i++) {
         todos[i].isComplete = true;
       }
       this.setState({
@@ -46,7 +47,7 @@ class Main extends Component {
         clicked: true
       });
     } else {
-      for(let i =0; i < todos.length; i++) {
+      for (let i = 0; i < todos.length; i++) {
         todos[i].isComplete = false;
       }
       this.setState({
@@ -57,7 +58,7 @@ class Main extends Component {
     }
   };
 
-  onTodoItemCreate = (value) => {
+  onTodoItemCreate = value => {
     const { todos } = this.state;
     this.setState({
       todos: [{ value, isComplete: false, id: Main.ID++ }, ...todos]
@@ -65,9 +66,10 @@ class Main extends Component {
   };
 
   getVisibleTodos = memoize((todos, selectedFilter) => {
-    if(selectedFilter === 'active') {
+    console.log(todos);
+    if (selectedFilter === 'active') {
       return Main.activeTodos(todos);
-    } else if(selectedFilter === 'complete') {
+    } else if (selectedFilter === 'complete') {
       return Main.completedTodos(todos);
     }
     return todos;
@@ -85,10 +87,10 @@ class Main extends Component {
 
     this.setState({
       todos: newTodos
-    })
+    });
   };
 
-  onTodoItemRemove = (todo) => {
+  onTodoItemRemove = todo => {
     const { todos } = this.state;
     const index = todos.indexOf(todo);
 
@@ -97,27 +99,28 @@ class Main extends Component {
     });
   };
 
-  onFilterChange = (selectedFilter) => {
+  onFilterChange = selectedFilter => {
     this.setState({
       selectedFilter
     });
   };
 
   render() {
-    const {
-      classes
-    } = this.props;
+    const { classes } = this.props;
 
-    const {
-      todos,
-      selectedFilter
-    } = this.state;
+    const { todos, selectedFilter } = this.state;
 
     const visibleTodos = this.getVisibleTodos(todos, selectedFilter);
 
     return (
       <Paper className={classes.main}>
-        <Typography className={classes.heading} variant="headline" component="h1">todos</Typography>
+        <Typography
+          className={classes.heading}
+          variant="headline"
+          component="h1"
+        >
+          todos
+        </Typography>
         <Card>
           <CardContent className={classes.card}>
             <CreateTodoItem
@@ -139,5 +142,13 @@ class Main extends Component {
     );
   }
 }
+
+Main.propTypes = {
+  ID: PropTypes.number,
+  completedTodos: PropTypes.func,
+  activeTodos: PropTypes.func,
+  markCompleteAll: PropTypes.func,
+  onTodoItemCreate: PropTypes.func
+};
 
 export default withStyles(styles)(Main);
